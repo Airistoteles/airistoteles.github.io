@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Airistoteles — AI startup</title>
+<meta name="description" content="Airistoteles is an AI startup. Coming soon." />
+<meta property="og:title" content="Airistoteles" />
+<meta property="og:description" content="An AI startup. Coming soon." />
+<meta name="theme-color" content="#0e1512" />
+<style>
+  :root{
+    --bg:#0e1512; --bg2:#0b1210; --ink:#eef1e6; --muted:#94a096;
+    --line:rgba(238,241,230,.12); --chalk:#ecc35c; --chalk-soft:rgba(236,195,92,.7);
+  }
+  :root[data-theme="dark"]{
+    --bg:#0e1512; --bg2:#0b1210; --ink:#eef1e6; --muted:#94a096;
+    --line:rgba(238,241,230,.12); --chalk:#ecc35c; --chalk-soft:rgba(236,195,92,.7);
+  }
+  @media (prefers-color-scheme: light){
+    :root{
+      --bg:#f4f2e9; --bg2:#efece0; --ink:#1b241f; --muted:#5c665b;
+      --line:rgba(27,36,31,.14); --chalk:#b8891f; --chalk-soft:rgba(184,137,31,.8);
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#f4f2e9; --bg2:#efece0; --ink:#1b241f; --muted:#5c665b;
+    --line:rgba(27,36,31,.14); --chalk:#b8891f; --chalk-soft:rgba(184,137,31,.8);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; color:var(--ink);
+    background:
+      radial-gradient(1000px 620px at 50% -8%, var(--bg2), transparent 60%),
+      var(--bg);
+    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+    display:flex; flex-direction:column; min-height:100%;
+  }
+  .stage{
+    flex:1; display:flex; align-items:center; justify-content:center;
+    width:100%; padding:9vh 26px;
+  }
+  .lede{max-width:38ch; text-align:center}
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:10px; margin:0 0 30px;
+    font-size:12.5px; letter-spacing:.24em; text-transform:uppercase; color:var(--muted);
+  }
+  .eyebrow .spark{width:7px; height:7px; border-radius:50%; background:var(--chalk);
+    box-shadow:0 0 0 4px color-mix(in srgb, var(--chalk) 20%, transparent)}
+  h1{
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    font-weight:600; font-size:clamp(56px,12vw,112px); line-height:.98; letter-spacing:-.02em;
+    margin:0 0 22px; text-wrap:balance;
+  }
+  .tag{font-size:clamp(20px,3vw,28px); font-weight:500; margin:0 0 16px; line-height:1.25; text-wrap:balance}
+  .tag em{font-style:normal; color:var(--chalk)}
+  .sub{color:var(--muted); font-size:clamp(15px,1.8vw,17px); margin:0 auto 36px; max-width:38ch}
+  .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:center}
+  a.btn{
+    text-decoration:none; font-weight:600; font-size:15px; padding:12px 20px; border-radius:11px;
+    border:1px solid var(--line); color:var(--ink); background:transparent;
+    transition:border-color .18s ease, transform .18s ease;
+  }
+  a.btn.primary{border-color:var(--chalk-soft); color:var(--chalk)}
+  a.btn:hover{transform:translateY(-1px); border-color:var(--chalk)}
+  a.btn:focus-visible{outline:2px solid var(--chalk); outline-offset:3px}
+  footer{
+    border-top:1px solid var(--line); padding:22px 26px; max-width:1120px; width:100%; margin:0 auto;
+    display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    color:var(--muted); font-size:13.5px;
+  }
+  footer a{color:var(--muted); text-decoration:none}
+  footer a:hover{color:var(--ink)}
+</style>
+</head>
+<body>
+  <main class="stage">
+    <div class="lede">
+      <p class="eyebrow"><span class="spark"></span>Coming soon</p>
+      <h1>Airistoteles</h1>
+      <p class="tag">An <em>AI startup</em> in the making.</p>
+      <p class="sub">We're building something new. Say hello, and we'll let you know when it's ready.</p>
+      <div class="row">
+        <a class="btn primary" href="mailto:hello@airistoteles.nl?subject=Keep%20me%20posted">Keep me posted</a>
+        <a class="btn" href="mailto:hello@airistoteles.nl">Get in touch</a>
+      </div>
+    </div>
+  </main>
+  <footer>
+    <span>© 2026 Airistoteles</span>
+    <a href="mailto:hello@airistoteles.nl">hello@airistoteles.nl</a>
+  </footer>
+</body>
+</html>
