@@ -35,20 +35,13 @@
     flex:1; width:100%; max-width:600px; margin:0 auto;
     padding:max(15vh,96px) 28px 64px;
   }
-  .label{
-    font-weight:600; font-size:13px; letter-spacing:.08em; text-transform:uppercase;
-    color:var(--primary); margin-bottom:20px;
-  }
   h1{
     font-family:"Bricolage Grotesque",serif; font-weight:700;
     font-size:clamp(44px,9vw,64px); line-height:1.04; letter-spacing:-.02em;
     margin-bottom:28px;
   }
-  .what{color:var(--text); margin-bottom:14px}
+  .what{color:var(--text); margin-bottom:40px}
   .what strong{font-weight:600}
-  .from{color:var(--muted); margin-bottom:40px}
-  .from a{color:var(--muted); text-decoration:underline; text-underline-offset:3px; text-decoration-color:var(--border)}
-  .from a:hover{color:var(--text)}
   a.cta{
     display:inline-block; text-decoration:none;
     font-weight:600; font-size:17px; line-height:1;
@@ -59,19 +52,23 @@
   a.cta:hover{background:var(--primary-pressed)}
   a.cta:active{transform:scale(.98)}
   a.cta:focus-visible{outline:2px solid var(--primary); outline-offset:3px}
-  .founders{
-    display:flex; gap:36px; margin-top:72px;
-    padding-top:36px; border-top:1px solid var(--border);
+  .about{
+    margin-top:72px; padding-top:36px; border-top:1px solid var(--border);
   }
+  .about p{color:var(--muted); margin-bottom:28px}
+  .about p a{color:var(--text); text-decoration:underline; text-underline-offset:3px; text-decoration-color:var(--border)}
+  .founders{display:flex; gap:44px; flex-wrap:wrap}
   a.founder{
     display:flex; align-items:center; gap:14px;
-    text-decoration:none; color:var(--text); font-weight:500; font-size:16px;
+    text-decoration:none; color:var(--text);
   }
   a.founder img{
-    width:52px; height:52px; border-radius:50%; object-fit:cover; display:block;
+    width:56px; height:56px; border-radius:50%; object-fit:cover; display:block;
   }
-  a.founder span{border-bottom:1px solid transparent; transition:border-color .15s ease}
-  a.founder:hover span{border-color:var(--text)}
+  a.founder .name{font-weight:600; font-size:16px; line-height:1.3}
+  a.founder .link{color:var(--primary); font-weight:500; font-size:14px; line-height:1.3}
+  a.founder .link::after{content:" \2197"}
+  a.founder:hover .link{text-decoration:underline; text-underline-offset:3px}
   a.founder:focus-visible{outline:2px solid var(--primary); outline-offset:3px; border-radius:8px}
   footer{
     width:100%; max-width:600px; margin:0 auto; padding:24px 28px;
@@ -84,20 +81,21 @@
 </head>
 <body>
   <main>
-    <p class="label">Coming soon</p>
     <h1>Airistoteles</h1>
-    <p class="what">We're building a <strong>true AI tutor for mathematics</strong> — one that understands what a student is working on, follows their reasoning, catches their mistakes, and guides them step by step.</p>
-    <p class="from">From the founders of <a href="https://wiswiz.nl">WisWiz</a>, used by thousands of students across the Netherlands.</p>
+    <p class="what">We're building a <strong>true AI tutor for mathematics</strong>: one that understands what a student is working on, follows their reasoning, catches their mistakes, and guides them step by step.</p>
     <a class="cta" href="mailto:louis@airistoteles.nl">Get in touch</a>
-    <div class="founders">
-      <a class="founder" href="https://www.linkedin.com/in/louis-vetter/">
-        <img src="louis.png" alt="Louis Vetter" width="52" height="52" />
-        <span>Louis Vetter</span>
-      </a>
-      <a class="founder" href="https://www.linkedin.com/in/philip-pinckaers-1604b3192/">
-        <img src="philip.png" alt="Philip Pinckaers" width="52" height="52" />
-        <span>Philip Pinckaers</span>
-      </a>
+    <div class="about">
+      <p>We previously built <a href="https://wiswiz.nl">WisWiz</a>, a maths tutoring app used by thousands of students across the Netherlands. Airistoteles is where we take that further.</p>
+      <div class="founders">
+        <a class="founder" href="https://www.linkedin.com/in/louis-vetter/">
+          <img src="louis.png" alt="Louis Vetter" width="56" height="56" />
+          <span><span class="name">Louis Vetter</span><br /><span class="link">LinkedIn</span></span>
+        </a>
+        <a class="founder" href="https://www.linkedin.com/in/philip-pinckaers-1604b3192/">
+          <img src="philip.png" alt="Philip Pinckaers" width="56" height="56" />
+          <span><span class="name">Philip Pinckaers</span><br /><span class="link">LinkedIn</span></span>
+        </a>
+      </div>
     </div>
   </main>
   <footer>
