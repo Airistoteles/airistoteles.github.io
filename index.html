@@ -3,61 +3,427 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Airistoteles</title>
-<meta name="description" content="Airistoteles is building a true AI tutor for mathematics, by the founders of WisWiz." />
-<meta property="og:title" content="Airistoteles" />
-<meta property="og:description" content="Building a true AI tutor for mathematics, by the founders of WisWiz." />
-<meta name="theme-color" content="#FFFFFF" />
+<title>Nima</title>
+<meta name="description" content="Nima is your learning companion, starting in mathematics. We are now beta testing with people." />
+<meta property="og:title" content="Nima" />
+<meta property="og:description" content="Your learning companion, starting in mathematics. We are now beta testing with people." />
+<meta name="theme-color" content="#E7F1EC" />
+<link rel="icon" type="image/png" href="favicon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&family=STIX+Two+Text:ital@0;1&display=swap" rel="stylesheet" />
 <style>
+  /* The app's session look, verbatim: clean white page, warm-study ink/teal
+     tokens (theme/tokens.ts), Ubuntu everywhere. Every sentence on this page
+     is taken from the founders' final YC application texts — nothing else. */
   :root{
-    --background:#FFFFFF; --text:#211E18; --muted:#6C6456;
-    --primary:#0E7C67;
+    --ink:#211E18; --muted:#6C6456; --hairline:#E7E1D4;
+    --teal:#0E7C67; --teal-pressed:#0B6A57;
+    --board-ink:#1a1c21; --board-muted:rgba(26,28,33,0.55);
   }
   *{box-sizing:border-box; margin:0}
+  html,body{height:100%}
+  /* RICHARD'S FRAME. The animation bundle (nima-animation dist/wave-web-v1)
+     draws Richard on a 1064x1280 frame with a real alpha channel. Both the
+     still and the wave are that same frame, so they need one shared width.
+     --plate is the old design width of Richard on this page; --frame is the
+     frame that holds that same Richard at that same size:
+       still on screen  = --plate * 642/720   (richard.png's own silhouette)
+       frame on screen  = --frame * 654/1064
+     and 1.4371 is the factor that makes the two equal, measured by fitting
+     the delivered rest.png onto the page's old still (best fit around the
+     face: scale 0.9725, so 1064/720 * 0.9725 = 1.4371). Richard therefore
+     keeps exactly the size and the place he had before this change. */
+  :root{ --plate:min(48vh, 88vw, 440px); --frame:calc(var(--plate) * 1.4371) }
+  /* The app's warm-study paper (tokens.ts: gradient #E7F1EC -> #F5F2EA) —
+     the white board plate sits on it exactly like the sheet in a session.
+     The paper is painted by .stage; body carries only the flat end colour,
+     for overscroll. */
   body{
-    background:var(--background); color:var(--text);
-    font-family:"Figtree",system-ui,sans-serif; font-size:16px; line-height:1.6;
+    background:#F5F2EA; color:var(--ink);
+    font-family:"Ubuntu",system-ui,sans-serif;
     -webkit-font-smoothing:antialiased;
-    max-width:560px; margin:0 auto; padding:88px 24px 72px;
   }
-  h1{
-    font-family:"Bricolage Grotesque",serif; font-weight:700;
-    font-size:34px; line-height:1.1; letter-spacing:-.01em;
-    margin-bottom:24px;
+
+  .stage{
+    position:relative; min-height:100svh; overflow:hidden;
+    background:linear-gradient(#E7F1EC, #F5F2EA);
+    display:flex; align-items:flex-end; justify-content:center;
+    gap:0;
   }
-  p{margin-bottom:20px}
-  p strong{font-weight:600}
-  .muted{color:var(--muted)}
-  a{color:var(--primary); text-decoration:underline; text-underline-offset:3px}
-  a:hover{color:var(--text)}
-  .founders{display:flex; gap:40px; flex-wrap:wrap; margin:36px 0}
-  a.founder{
-    display:flex; align-items:center; gap:12px;
-    text-decoration:none; color:var(--text);
+
+  /* HALF AND HALF (Philip, 2026-08-14: "links 50 nima animation, rechts 50
+     whiteboard"): the page is two equal columns. Richard owns the left half,
+     the board owns the right half, and each stands in the middle of its own
+     half — so neither side carries the empty space alone. */
+  .half{
+    flex:1 1 50%; min-width:0;
+    display:flex; align-items:flex-end; justify-content:center;
   }
-  a.founder img{width:48px; height:48px; border-radius:50%; object-fit:cover; display:block}
-  a.founder .name{font-weight:600; font-size:15px; line-height:1.35}
-  a.founder .link{color:var(--primary); font-size:13.5px; line-height:1.35; text-decoration:underline; text-underline-offset:3px}
-  a.founder:hover .link{color:var(--text)}
+  /* ROOM FOR THE RAISED HAND: the raised hand lives inside the 1064-wide
+     frame, and the frame is wider than Richard. This padding keeps the frame
+     standing where the old still stood, so Richard does not walk towards the
+     board. Measured: it holds his centre within 2.4px of its old place. */
+  .half-richard{padding-right:calc(var(--plate) * 0.22)}
+
+  /* THE WHITEBOARD — the app's board plate, verbatim (BoardSheet #185):
+     white plate, top corners 18, drop shadow as the only separation, the
+     grabber pill, and the panel light that makes it a glossy board instead
+     of paper. The page's message IS what's written on it. */
+  .sheet{
+    position:relative; z-index:2;
+    width:min(640px, 100%); min-height:60vh;
+    margin-top:8vh;
+    background:#FFFFFF;
+    border-radius:18px 18px 0 0;
+    box-shadow:0 -4px 14px rgba(0,0,0,0.14), 0 6px 24px rgba(0,0,0,0.10);
+  }
+  .sheet .gloss{
+    position:absolute; inset:0; pointer-events:none;
+    border-radius:18px 18px 0 0;
+    background:
+      linear-gradient(115deg,
+        rgba(148,163,184,0) 28%,
+        rgba(148,163,184,0.055) 50%,
+        rgba(148,163,184,0) 72%),
+      linear-gradient(140deg,
+        rgba(148,163,184,0) 0%,
+        rgba(148,163,184,0.06) 55%,
+        rgba(148,163,184,0.16) 100%);
+  }
+  .grabber-zone{height:16px; display:flex; align-items:flex-end; justify-content:center}
+  .grabber{
+    width:44px; height:5px; border-radius:3px;
+    background:rgba(22,24,29,0.22);
+    animation:writePulse 0.9s ease-out 0.4s 1;
+  }
+  @keyframes writePulse{
+    0%{background:rgba(22,24,29,0.22)}
+    25%{background:rgba(22,163,74,0.85)}
+    100%{background:rgba(22,24,29,0.22)}
+  }
+
+  /* The writing on the board: the app's board type — a muted lowercase
+     header over a hairline, then ink. */
+  .board-body{position:relative; padding:26px 44px 34px}
+  .hero{font-size:26px; line-height:36px; font-weight:700; color:var(--board-ink); margin-bottom:16px; text-wrap:balance}
+  .bl{font-size:19px; line-height:28px; color:var(--board-ink); margin-bottom:14px}
+
+  form.try{display:flex; gap:12px; margin:0; flex-wrap:wrap}
+  form.try input[type=email], form.try input[type=text]{
+    flex:1 1 180px; min-width:180px; max-width:260px; padding:12px 14px;
+    font:inherit; font-size:16.5px;
+    color:var(--ink); background:#FFFFFF;
+    border:1px solid var(--hairline); border-radius:10px; outline:none;
+  }
+  form.try input::placeholder{color:var(--muted); opacity:.7}
+  form.try input:focus{border-color:var(--teal)}
+  form.try button{
+    padding:12px 22px; font:inherit; font-size:16.5px; font-weight:500;
+    letter-spacing:.1px; color:#FFF; background:var(--teal);
+    border:none; border-radius:10px; cursor:pointer;
+  }
+  form.try button:hover{background:var(--teal-pressed)}
+  .thanks{font-size:19px; color:var(--teal); font-weight:500; margin:0}
+  a{color:var(--teal); text-decoration:none}
+  a:hover{color:var(--teal-pressed)}
+
+  /* THE BOARD TOOLBAR — in the spirit of the app's own topbar: quiet Ubuntu
+     labels over the board's hairline, teal only on the active choice. */
+  .board-tabs{display:flex; gap:26px; padding:6px 44px 0; border-bottom:1px solid var(--hairline)}
+  .board-tabs button{
+    font:inherit; font-size:15px; font-weight:500; letter-spacing:.1px;
+    color:var(--board-muted); background:none; border:none; cursor:pointer;
+    padding:10px 2px 11px; border-bottom:2px solid transparent; margin-bottom:-1px;
+  }
+  .board-tabs button:hover{color:var(--board-ink)}
+  .board-tabs button[aria-selected="true"]{color:var(--teal); border-bottom-color:var(--teal)}
+
+  /* ONE PLATE, ONE SIZE (Philip: the whiteboard stays the same size when
+     switching): both panels share the same grid cell, so the plate is always
+     as tall as the taller one — the hidden panel keeps its space, invisible. */
+  .board-panels{display:grid}
+  .board-panels > .board-body{grid-area:1/1}
+  .board-panels > .board-body[hidden]{display:block; visibility:hidden; pointer-events:none}
+
+  /* THE FOUNDERS' NOTE — on the board, under the About Us choice. */
+  .about p{font-size:16px; line-height:25px; color:var(--board-ink); margin-bottom:12px}
+  .founders{display:flex; gap:18px; margin-top:20px; flex-wrap:wrap}
+  .founder{display:flex; align-items:center; gap:10px; color:var(--board-ink)}
+  .founder img{width:44px; height:44px; border-radius:50%; display:block}
+  .founder .name{font-weight:500; font-size:15px}
+
+  /* THE DEMO ON THE BOARD — a media block under the message, like the
+     board's own image blocks; the native controls carry the maximize.
+     The player is capped at 400px (Philip, 2026-08-14: "maybe video
+     smaller?") so the board stays short enough for one screen; the native
+     controls still open it full size. */
+  .demo-intro{margin:26px 0 12px}
+  .board-demo{margin:0 0 26px}
+  .board-demo video{
+    display:block; width:min(100%, 400px); aspect-ratio:16/9;
+    border-radius:12px; background:#000;
+  }
+
+  .reveal{opacity:0; transform:translateY(4px); animation:reveal .2s ease-out forwards}
+  @keyframes reveal{to{opacity:1; transform:none}}
+  .d1{animation-delay:.35s} .d2{animation-delay:.7s} .d3{animation-delay:1.0s}
+
+  /* RICHARD, chilling — bottom-pinned exactly like the session (the only cut
+     is the screen's bottom edge). Breathing scales around the bottom so his
+     shirt stays sealed to the edge; blinks are hard keyframe cuts.
+     No z-index: the sheet (z-index 2) still paints over him.
+     The box keeps the height it always had (--plate * 1.5) and clips the
+     empty top of the taller frame, so the page is not one pixel longer than
+     before — that matters on a phone, where Richard is a row of his own. */
+  .richard{
+    position:relative; bottom:0; flex:none;
+    width:var(--frame); height:calc(var(--plate) * 1.5); overflow:hidden;
+    pointer-events:none; user-select:none;
+  }
+  .richard-inner{
+    position:absolute; left:0; bottom:0; width:100%;
+    transform-origin:50% 100%;
+    animation:breath 6.4s ease-in-out infinite;
+    transition:opacity .22s linear;
+  }
+  /* Scoped to the still (.richard-inner), never to the wave: `.richard img`
+     would outrank `.wave` on specificity and silently undo its geometry. */
+  .richard-inner img{display:block; width:100%; height:auto}
+  /* The eye patches were drawn on the old 720x1080 still. On the 1064x1280
+     frame they sit here: measured by matching the old still's eye band onto
+     rest.png (scale 0.9725, dx -155.0, dy -188.5), which maps the old box
+     x 211 y 411 w 302 to x 376.3 y 616.8 w 310.9 of 1064x1280. */
+  .richard .lid{
+    position:absolute; left:35.366%; top:48.187%; width:29.219%;
+    opacity:0;
+  }
+  @keyframes breath{
+    0%,100%{transform:scale(1)} 50%{transform:scale(1.007)}
+  }
+
+  /* THE FIRST-VISIT WAVE — Nima Animation's web bundle dist/wave-web-v1
+     (their card 28), 1064x1280, 242 frames at 48fps = 5.042s, silent.
+     TWO SOURCES: VP9/WebM with a real alpha channel for Chrome, Firefox and
+     Edge, and HEVC-alpha in the Apple form for Safari. The browser takes the
+     first one it can play, so Safari falls through to the .mov.
+     NO BLEND MODE, NO FILTER, NO BACKGROUND. Those existed only to hide a
+     clip that had no transparency and carried its own plate; that plate is
+     what drew the hard line across the page. This clip has real alpha, so
+     the page shines through everywhere Richard is not, and a darken blend
+     would now darken Richard himself.
+     The frame is the same frame as the still (rest.png is its first frame),
+     so `left:0; width:100%` puts the wave exactly on the still — no shift to
+     compute and nothing to drift. They trade places over 0.22s, so the
+     breath, which the still has and the clip does not, cannot show as a jump.
+     aspect-ratio holds the geometry before the metadata arrives, because
+     preload="none" means the clip is fetched only when he comes into view. */
+  .wave{
+    position:absolute; left:0; bottom:0; width:100%; height:auto;
+    aspect-ratio:1064 / 1280;
+    opacity:0; pointer-events:none;
+    transition:opacity .22s linear;
+  }
+  .waving .wave{opacity:1}
+  .waving .richard-inner{opacity:0}
+
+  @media (prefers-reduced-motion: reduce){
+    .richard-inner{animation:none}
+    .reveal{animation-duration:0s; animation-delay:0s}
+    .grabber{animation:none}
+  }
+
+  /* Small screens: the sheet spans from the left edge like the app's sheet;
+     Richard stands behind its right side, head above the plate. */
+  @media (max-width: 900px){
+    /* One column on a phone: there are no halves to divide, so each half
+       becomes a full-width row and the board comes first, as before. */
+    :root{ --plate:min(38vh, 72vw) }
+    .stage{flex-direction:column; align-items:stretch; justify-content:flex-start}
+    .half{flex:0 0 auto; width:100%}
+    .half-board{order:1}
+    .half-richard{order:3; justify-content:flex-end; margin-top:-10px}
+    .sheet{
+      width:auto; min-height:0; margin:5vh 0 0; align-self:stretch;
+    }
+    .board-body{padding:16px 26px 32px}
+    .board-tabs{padding:6px 26px 0; gap:20px}
+    .hero{font-size:22px; line-height:31px}
+    .bl{font-size:17px; line-height:26px}
+    /* On a phone the frame stands against the right edge, shifted left by
+       this much. Derived the same way as the desktop padding: it puts
+       Richard's centre on the exact place he had before the frame changed
+       (he used to be a 720-wide plate shifted left by a quarter of itself).
+       The frame is wider than the screen, but only its transparent edges
+       fall outside: measured at 390x844 his silhouette starts at 14% of the
+       screen and the frame's right edge, where the raised hand reaches,
+       stays on the screen. */
+    .half-richard{padding-right:0}
+    .richard{ right:calc(var(--plate) * 0.026) }
+  }
 </style>
 </head>
 <body>
-  <h1>Airistoteles</h1>
-  <p>We're building a <strong>true AI tutor for mathematics</strong>: one that understands what a student is working on, follows their reasoning, catches their mistakes, and guides them step by step.</p>
-  <p class="muted">We previously built <a href="https://wiswiz.nl">WisWiz</a>, a maths tutoring app used by thousands of students across the Netherlands, featured in <a href="https://fd.nl/tech-en-innovatie/1588534/als-we-ook-menselijke-druk-in-de-app-kunnen-zetten-dan-zijn-we-klaar">Het Financieele Dagblad</a> and <a href="https://www.parool.nl/ps/bijles-in-je-broekzak-philip-20-en-stijn-21-ontwikkelden-een-wiskunde-app-voor-scholieren~b0f76f47/">Het Parool</a>.</p>
-  <div class="founders">
-    <a class="founder" href="https://www.linkedin.com/in/louis-vetter/">
-      <img src="louis.png" alt="Louis Vetter" width="48" height="48" />
-      <span><span class="name">Louis Vetter</span><br /><span class="link">LinkedIn</span></span>
-    </a>
-    <a class="founder" href="https://www.linkedin.com/in/philip-pinckaers-1604b3192/">
-      <img src="philip.png" alt="Philip Pinckaers" width="48" height="48" />
-      <span><span class="name">Philip Pinckaers</span><br /><span class="link">LinkedIn</span></span>
-    </a>
+  <div class="stage">
+    <div class="half half-richard">
+    <div class="richard" aria-hidden="true">
+      <div class="richard-inner" id="richard">
+        <img src="rest.png" alt="" width="1064" height="1280" fetchpriority="high" />
+        <img class="lid" id="lidHalf" src="blink-half.png" alt="" />
+        <img class="lid" id="lidClosed" src="blink.png" alt="" />
+      </div>
+      <video class="wave" id="wave" muted playsinline preload="none" disablepictureinpicture>
+        <source src="wave.webm" type="video/webm" />
+        <source src="wave.mov" type='video/quicktime; codecs="hvc1"' />
+      </video>
+    </div>
+    </div>
+
+    <div class="half half-board">
+    <div class="sheet">
+      <div class="grabber-zone"><div class="grabber"></div></div>
+      <nav class="board-tabs" role="tablist" aria-label="Board sections">
+        <button type="button" role="tab" id="tab-nima" aria-controls="panel-nima" aria-selected="true">Nima</button>
+        <button type="button" role="tab" id="tab-about" aria-controls="panel-about" aria-selected="false">About Us</button>
+      </nav>
+      <div class="board-panels">
+      <div class="board-body" id="panel-nima" role="tabpanel" aria-labelledby="tab-nima">
+        <p class="hero reveal d1">Nima is your learning companion, starting in mathematics.</p>
+        <p class="bl reveal d2">Nima guides you through a learning session by speaking and listening to you, seeing your textbook and seeing your worked solutions.</p>
+        <p class="bl demo-intro reveal d3">Here is a demo of a session:</p>
+        <div class="board-demo reveal d3">
+          <video src="demo.mp4" poster="demo-poster.jpg" controls preload="metadata" playsinline></video>
+        </div>
+        <p class="bl reveal d3">We are now beta testing Nima with people. Do you want to test it too? <a href="https://testflight.apple.com/join/uFDDHcCd">Get Nima on TestFlight</a>.</p>
+        <form class="try" id="tryform" action="https://formsubmit.co/philip@airistoteles.nl" method="POST">
+          <input type="hidden" name="_subject" value="Nima via trynima.ai" />
+          <input type="hidden" name="_captcha" value="false" />
+          <input type="hidden" name="_next" value="https://trynima.ai/?sent=1" />
+          <input type="email" name="email" required placeholder="you@example.com" aria-label="Your email" />
+          <input type="text" name="message" placeholder="Your note" aria-label="Your note" />
+          <button type="submit">Try Nima early</button>
+        </form>
+        <p class="thanks" id="thanks" hidden>Thanks! We'll reach out shortly to get you in.</p>
+      </div>
+      <div class="board-body about" id="panel-about" role="tabpanel" aria-labelledby="tab-about" hidden>
+        <p>We both have years of tutoring experience and studied mathematics, which led us to found our previous startup WisWiz, a learning tool for mathematics with users in the Netherlands, featured in the Dutch newspapers <a href="https://fd.nl/tech-en-innovatie/1588534/als-we-ook-menselijke-druk-in-de-app-kunnen-zetten-dan-zijn-we-klaar">Het Financieele Dagblad</a> and <a href="https://www.parool.nl/ps/bijles-in-je-broekzak-philip-20-en-stijn-21-ontwikkelden-een-wiskunde-app-voor-scholieren~b0f76f47/">Het Parool</a>.</p>
+        <div class="founders">
+          <div class="founder">
+            <img src="louis.png" alt="Louis Vetter" width="44" height="44" />
+            <span class="name">Louis Vetter</span>
+          </div>
+          <div class="founder">
+            <img src="philip.png" alt="Philip Pinckaers" width="44" height="44" />
+            <span class="name">Philip Pinckaers</span>
+          </div>
+        </div>
+      </div>
+      </div>
+      <div class="gloss"></div>
+    </div>
+    </div>
   </div>
-  <p>Get in touch: <a href="mailto:louis@airistoteles.nl">louis@airistoteles.nl</a></p>
+
+  <noscript>
+    <!-- No script, no toolbar: both sections simply stand on the board. -->
+    <style>
+      .board-tabs{display:none}
+      .board-panels{display:block}
+      .board-panels > .board-body[hidden]{display:block; visibility:visible; pointer-events:auto}
+    </style>
+  </noscript>
+  <script>
+    // The board toolbar: two choices, one panel on the board at a time.
+    (function () {
+      var tabs = [
+        { tab: document.getElementById('tab-nima'), panel: document.getElementById('panel-nima') },
+        { tab: document.getElementById('tab-about'), panel: document.getElementById('panel-about') }
+      ];
+      tabs.forEach(function (t) {
+        t.tab.addEventListener('click', function () {
+          tabs.forEach(function (o) {
+            var on = o === t;
+            o.tab.setAttribute('aria-selected', on ? 'true' : 'false');
+            o.panel.hidden = !on;
+          });
+        });
+      });
+    })();
+
+    // Early-access form: inline thanks state after the FormSubmit redirect.
+    if (new URLSearchParams(location.search).get('sent') === '1') {
+      document.getElementById('tryform').hidden = true;
+      document.getElementById('thanks').hidden = false;
+    }
+
+    // Richard's chilling animation, ported from the app's RichardAvatar:
+    // blinks are HARD KEYFRAME CUTS (open→half→closed→half→open), on a rare
+    // uneven rhythm (6–11s) with one early entrance blink; breathing is the
+    // CSS loop above. Calm — quietly alive, never busy.
+    (function () {
+      var half = document.getElementById('lidHalf');
+      var closed = document.getElementById('lidClosed');
+      var blinking = false;
+      function blink() {
+        if (blinking) return;
+        blinking = true;
+        half.style.opacity = 1;
+        setTimeout(function () {
+          closed.style.opacity = 1; half.style.opacity = 0;
+          setTimeout(function () {
+            closed.style.opacity = 0; half.style.opacity = 1;
+            setTimeout(function () {
+              half.style.opacity = 0; blinking = false;
+            }, 55);
+          }, 100);
+        }, 45);
+      }
+      function schedule() {
+        setTimeout(function () { blink(); schedule(); }, 6000 + Math.random() * 5000);
+      }
+      setTimeout(blink, 700);
+      schedule();
+    })();
+
+    // THE FIRST VISIT: Richard waves once, and never again on this device.
+    // The still is the page; the wave is an overlay that exists only while it
+    // plays. So a refused autoplay leaves exactly today's page — nothing to
+    // hide and nothing to undo. The clip is silent and ends on the rest pose.
+    // He waves when he is ON SCREEN, not when the page loads: on a phone he
+    // stands well below the fold, and a wave nobody can see is a wave spent.
+    (function () {
+      var box = document.querySelector('.richard');
+      var wave = document.getElementById('wave');
+      // trynima.ai/?wave plays it again — the one way to see the wave twice.
+      var again = new URLSearchParams(location.search).has('wave');
+      var seen;
+      try { seen = localStorage.getItem('nima_waved'); } catch (e) { seen = null; }
+      if (seen && !again) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      function greet() {
+        try { localStorage.setItem('nima_waved', '1'); } catch (e) {}
+        wave.addEventListener('playing', function () { box.classList.add('waving'); });
+        wave.addEventListener('ended', function () { box.classList.remove('waving'); });
+        // The sources stand in the HTML; preload="none" holds the fetch back
+        // until here, so the page is on screen before the clip is asked for.
+        var p = wave.play();
+        // A browser may refuse to start it. Then the still simply stays.
+        if (p && p.catch) p.catch(function () {});
+      }
+
+      window.addEventListener('load', function () {
+        // The page is on screen first; the 2.4 MB clip loads after it.
+        setTimeout(function () {
+          var watch = new IntersectionObserver(function (entries) {
+            if (!entries[0].isIntersecting) return;
+            watch.disconnect();
+            greet();
+          }, { threshold: 0.4 });
+          watch.observe(box);
+        }, 400);
+      });
+    })();
+  </script>
 </body>
 </html>
